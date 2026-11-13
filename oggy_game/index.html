@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oggy’s House · 3D Map</title>
+<style>
+:root{font-family:"Trebuchet MS",Arial,sans-serif;color:#292444;background:#a6d6ec;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button{font:inherit;cursor:pointer}
+canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none;display:block;cursor:grab}
+canvas:active{cursor:grabbing}canvas[data-view=overview]{cursor:default}
+.panel{background:#fff8e9f5;border:1px solid #fff7e9;border-radius:19px;box-shadow:0 9px 27px #38326924}
+header{position:fixed;top:22px;left:22px;right:22px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;pointer-events:none}
+header>*{pointer-events:auto}.brand{padding:15px 20px;min-width:212px}
+h1{font-size:27px;margin:0 0 2px;letter-spacing:-1.3px;color:#392758}.caption{color:#6e6387;font-size:13px;margin:0}
+.views{display:flex;gap:4px;padding:6px}.views button,.foot button,details button,#map-labels button{border:0;border-radius:12px;color:#3d3256;background:transparent;padding:10px 14px;font-size:13px;font-weight:700}
+.views button:hover,.foot button:hover,details button:hover,#map-labels button:hover{background:#f0e5fb}
+.views button[aria-pressed=true],.foot button[aria-pressed=true]{color:#fff;background:#6846a3}
+button:focus-visible,summary:focus-visible{outline:3px solid #ed8845;outline-offset:2px}
+button:disabled{opacity:.43;cursor:default}
+details{position:fixed;left:22px;top:114px;padding:9px 12px;max-width:206px}
+summary{cursor:pointer;font-size:13px;font-weight:700;padding:4px 5px}
+#rooms{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-top:7px}
+#rooms button{text-align:left;padding:7px;font-size:12px;white-space:nowrap}
+.foot{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);width:min(535px,calc(100% - 36px));padding:10px 11px 10px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.foot p{margin:0;font-size:13px;font-weight:700}.foot .keys{font-size:11px;color:#6e6387;margin-top:4px;font-weight:400}.foot .actions{display:flex;gap:3px}.foot button{padding:9px 10px}
+#map-labels{position:fixed;inset:0;pointer-events:none}#map-labels[hidden]{display:none}
+#map-labels button{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;background:#fff8edee;padding:5px 8px;white-space:nowrap;box-shadow:0 2px 7px #34305c44;font-size:11px}
+.pad{display:none;position:fixed;bottom:95px;right:18px;grid-template-columns:repeat(3,35px);gap:3px}
+.pad button{border:0;color:#493465;background:#fff8edec;border-radius:10px;font-size:17px;min-height:35px;touch-action:none}
+.pad .up{grid-column:2}.pad .left{grid-column:1}
+#error{position:fixed;left:50%;top:44%;transform:translate(-50%,-50%);padding:18px;max-width:90vw}
+@media(pointer:coarse){.pad{display:grid}canvas[data-view=overview]~.pad{display:none}}
+@media(max-width:620px){header{top:12px;left:12px;right:12px;flex-wrap:wrap}.brand{min-width:auto;padding:10px 14px}h1{font-size:22px}.views{padding:4px}.views button{padding:8px}.foot{bottom:12px}.foot .keys{display:none}details{left:12px;top:117px}.foot button{padding:8px 6px}}
+</style>
+</head>
+<body>
+<canvas aria-label="Interactive 3D house and garden"></canvas>
+<div id="map-labels" hidden></div>
+<header>
+  <div class="brand panel"><h1>Oggy’s House</h1><p class="caption">Interactive 3D map</p></div>
+  <nav class="views panel" aria-label="Camera view">
+    <button data-view="exterior" type="button">Exterior</button>
+    <button data-view="walk" type="button">Explore</button>
+    <button data-view="overview" type="button">Floor plan</button>
+  </nav>
+</header>
+<details class="panel"><summary>Jump to room</summary><div id="rooms"></div></details>
+<div class="pad" aria-label="Movement controls">
+  <button class="up" data-key="KeyW" aria-label="Move forward">↑</button>
+  <button class="left" data-key="KeyA" aria-label="Move left">←</button>
+  <button data-key="KeyS" aria-label="Move back">↓</button>
+  <button data-key="KeyD" aria-label="Move right">→</button>
+</div>
+<footer class="foot panel">
+  <div><p id="status">Loading the map…</p><p class="keys">WASD or arrows · Drag to orbit · E interact · C crouch · M map</p></div>
+  <div class="actions"><button id="interact" type="button">Interact</button><button id="crouch" type="button">Crouch</button><button id="reset" type="button">Reset</button></div>
+</footer>
+<div id="error" class="panel" hidden></div>
+<script>
+window.addEventListener('error', () => {
+  if (document.body.dataset.ready) return;
+  const message = document.querySelector('#error');
+  message.textContent = 'The 3D map could not start. Open it in a browser with WebGL 2 enabled.';
+  message.hidden = false;
+});
+</script>
+<!-- BUILD:PREVIEW -->
+</body>
+</html>
